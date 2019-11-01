@@ -8,10 +8,10 @@ public class Minefield {
     private final char EMPTY_SIGN = '.';
 
     private final int MINEFIELD_SIZE = 9;
-    private char[][] minefield;
+    private Field[][] fields;
 
     public Minefield(int amountOfMines) {
-        minefield = new char[MINEFIELD_SIZE][MINEFIELD_SIZE];
+        fields = new Field[MINEFIELD_SIZE][MINEFIELD_SIZE];
 
         fillEmpty();
         generateRandomMines(amountOfMines);
@@ -20,7 +20,7 @@ public class Minefield {
     private void fillEmpty() {
         for (int i=0; i<MINEFIELD_SIZE; i++) {
             for (int j=0; j<MINEFIELD_SIZE; j++) {
-                minefield[i][j] = EMPTY_SIGN;
+                fields[i][j].set(EMPTY_SIGN);
             }
         }
     }
@@ -35,9 +35,9 @@ public class Minefield {
             do {
                 mineX = rand.nextInt(MINEFIELD_SIZE);
                 mineY = rand.nextInt(MINEFIELD_SIZE);
-            } while(minefield[mineX][mineY] == BOMB_SIGN);
+            } while(fields[mineX][mineY].isBomb());
 
-            minefield[mineX][mineY] = BOMB_SIGN;
+            fields[mineX][mineY].set(BOMB_SIGN);
             fillCellsAround(mineX, mineY);
         }
     }
@@ -51,29 +51,19 @@ public class Minefield {
 
         for(int i=xStart; i<=xEnd; i++) {
             for(int j=yStart; j<=yEnd; j++) {
-                if(minefield[i][j] == BOMB_SIGN) {
+                if(fields[i][j].isBomb()) {
                     continue;
-                } else if(minefield[i][j] == EMPTY_SIGN) {
-                    minefield[i][j] = '1';
                 } else {
-                    addOneToField(i, j);
+                    fields[i][j].bombAround();
                 }
             }
         }
     }
 
-    private void addOneToField(int x, int y) {
-        int number = Integer.parseInt( Character.toString(minefield[x][y] ));
-
-        number++;
-
-        minefield[x][y] = Integer.toString(number).charAt(0);
-    }
-
     public void printMinefield() {
         for(int i=0; i< MINEFIELD_SIZE; i++) {
             for(int j=0; j< MINEFIELD_SIZE; j++) {
-                System.out.print(minefield[i][j]);
+                System.out.print(fields[i][j]);
             }
             System.out.print('\n');
         }
