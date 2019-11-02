@@ -4,23 +4,21 @@ import java.util.Random;
 
 public class Minefield {
 
-    private final char BOMB_SIGN = 'X';
-    private final char EMPTY_SIGN = '.';
-
     private final int MINEFIELD_SIZE = 9;
     private Field[][] fields;
 
     public Minefield(int amountOfMines) {
         fields = new Field[MINEFIELD_SIZE][MINEFIELD_SIZE];
 
-        fillEmpty();
+        initFields();
+
         generateRandomMines(amountOfMines);
     }
 
-    private void fillEmpty() {
-        for (int i=0; i<MINEFIELD_SIZE; i++) {
-            for (int j=0; j<MINEFIELD_SIZE; j++) {
-                fields[i][j].set(EMPTY_SIGN);
+    public void initFields() {
+        for (int i = 0; i < MINEFIELD_SIZE; i++) {
+            for (int j = 0; j < MINEFIELD_SIZE; j++) {
+                fields[i][j] = new Field();
             }
         }
     }
@@ -37,7 +35,9 @@ public class Minefield {
                 mineY = rand.nextInt(MINEFIELD_SIZE);
             } while(fields[mineX][mineY].isBomb());
 
-            fields[mineX][mineY].set(BOMB_SIGN);
+            fields[mineX][mineY].setAsBomb();
+            fields[mineX][mineY].reveal();
+
             fillCellsAround(mineX, mineY);
         }
     }
@@ -54,7 +54,7 @@ public class Minefield {
                 if(fields[i][j].isBomb()) {
                     continue;
                 } else {
-                    fields[i][j].bombAround();
+                    fields[i][j].addBombAround();
                 }
             }
         }
@@ -63,7 +63,7 @@ public class Minefield {
     public void printMinefield() {
         for(int i=0; i< MINEFIELD_SIZE; i++) {
             for(int j=0; j< MINEFIELD_SIZE; j++) {
-                System.out.print(fields[i][j]);
+                System.out.print(fields[i][j].getValue());
             }
             System.out.print('\n');
         }

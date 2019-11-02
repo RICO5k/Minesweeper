@@ -1,57 +1,50 @@
 package minesweeper;
 
 public class Field {
-
-    private final char BOMB_SIGN = 'X';
-    private final char EMPTY_SIGN = '.';
-    private final char MARKED_SIGN = '*';
-
-    private boolean hidden = false;
-    private boolean marked = false;
-
-    private int bombsAround = 0;
+    private FieldStates realState;
+    private FieldStates displayState;
 
     public Field() {
-
+        realState =  FieldStates.EMPTY;
+        displayState = FieldStates.HIDDEN;
     }
 
-    public void set(char val) {
-        value = val;
+    public void setAsBomb() {
+        realState = FieldStates.BOMB;
     }
 
     public boolean isBomb(){
-        return value == BOMB_SIGN;
+        return realState == FieldStates.BOMB;
     }
 
     public boolean hasBombsAround() {
-        return bombsAround > 0;
+        return realState == FieldStates.NUMBER;
     }
 
-    public void bombAround() {
-        bombsAround++;
+    public void addBombAround() {
+        if(realState != FieldStates.NUMBER) {
+            realState = FieldStates.NUMBER;
+        }
+
+        realState.addNumber();
     }
 
     public void toggleMark() {
-        marked =! marked;
+        if(displayState == FieldStates.MARKED) {
+            displayState = FieldStates.HIDDEN;
+        } else if(displayState == FieldStates.HIDDEN) {
+            displayState = FieldStates.MARKED;
+        }
+    }
+
+    public void reveal() {
+        if(displayState == FieldStates.HIDDEN) {
+            displayState = realState;
+        }
     }
 
     public char getValue() {
-        if(isBomb()) {
-
-        }
-        if(hidden) {
-            if(marked) {
-                return MARKED_SIGN;
-            } else {
-                return EMPTY_SIGN;
-            }
-        } else {
-            if(hasBombsAround()) {
-                return Integer.toString(bombsAround).charAt(0);
-            } else {
-                return EMPTY_SIGN;
-            }
-        }
+        return displayState.getValue();
     }
 
 }
