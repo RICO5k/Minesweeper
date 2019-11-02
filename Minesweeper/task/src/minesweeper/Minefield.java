@@ -36,13 +36,13 @@ public class Minefield {
             } while(fields[mineX][mineY].isBomb());
 
             fields[mineX][mineY].setAsBomb();
-            fields[mineX][mineY].reveal();
 
             fillCellsAround(mineX, mineY);
         }
     }
 
     private void fillCellsAround(int x, int y) {
+        System.out.println("around " + (x+1) + " " + (y+1));
         int xStart = x-1 < 0 ? x : x-1;
         int xEnd = x+1 >= MINEFIELD_SIZE ? x : x+1;
 
@@ -61,12 +61,47 @@ public class Minefield {
     }
 
     public void printMinefield() {
+        System.out.print("\n");
+        System.out.println(" |123456789|\n" +
+                "-|---------|");
         for(int i=0; i< MINEFIELD_SIZE; i++) {
+            System.out.print(i+1 + "|");
             for(int j=0; j< MINEFIELD_SIZE; j++) {
                 System.out.print(fields[i][j].getValue());
             }
-            System.out.print('\n');
+            System.out.print("|\n");
         }
+        System.out.println("-|---------|");
+    }
+
+    public boolean isMarkable(int x, int y) {
+        Field field = fields[x][y];
+
+        if( field.hasBombsAround() ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void mark(int x, int y) {
+        fields[x][y].toggleMark();
+    }
+
+    public boolean allBombsAreMarked() {
+        for (int i = 0; i < MINEFIELD_SIZE; i++) {
+            for (int j = 0; j < MINEFIELD_SIZE; j++) {
+                Field field = fields[i][j];
+
+                if(field.isMarked() && !field.isBomb()) {
+                    return false;
+                } else if(field.isBomb() && !field.isMarked()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
 }

@@ -15,16 +15,19 @@ public class Game {
     public void start() {
         initMinefield();
 
-        while (minefield.allBombsAreMarked()) {
+        while (!minefield.allBombsAreMarked()) {
             minefield.printMinefield();
 
             System.out.print("Set/delete mines marks (x and y coordinates): ");
 
-            int x = scanner.nextInt();
-            int y = scanner.nextInt();
+            int y = scanner.nextInt()-1;
+            int x = scanner.nextInt()-1;
 
             setMarkIfPossible(x, y);
         }
+
+        minefield.printMinefield();
+        System.out.println("Congratulations! You found all mines!");
     }
 
     public void initMinefield() {
@@ -37,6 +40,8 @@ public class Game {
     public void setMarkIfPossible(int x, int y) {
         if(minefield.isMarkable(x, y)) {
             minefield.mark(x, y);
+        } else {
+            System.out.println("There is a number here!");
         }
     }
 

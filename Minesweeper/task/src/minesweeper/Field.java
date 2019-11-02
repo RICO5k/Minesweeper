@@ -4,6 +4,8 @@ public class Field {
     private FieldStates realState;
     private FieldStates displayState;
 
+    private int bombsAround = 0;
+
     public Field() {
         realState =  FieldStates.EMPTY;
         displayState = FieldStates.HIDDEN;
@@ -11,10 +13,16 @@ public class Field {
 
     public void setAsBomb() {
         realState = FieldStates.BOMB;
+
+        displayState = FieldStates.HIDDEN;
     }
 
     public boolean isBomb(){
         return realState == FieldStates.BOMB;
+    }
+
+    public boolean isMarked() {
+        return displayState == FieldStates.MARKED;
     }
 
     public boolean hasBombsAround() {
@@ -22,11 +30,15 @@ public class Field {
     }
 
     public void addBombAround() {
+        System.out.println(realState.toString());
+
         if(realState != FieldStates.NUMBER) {
             realState = FieldStates.NUMBER;
+            reveal();
         }
 
-        realState.addNumber();
+        bombsAround++;
+        updateDisplay();
     }
 
     public void toggleMark() {
@@ -43,8 +55,18 @@ public class Field {
         }
     }
 
+    private void updateDisplay() {
+        if(displayState != FieldStates.HIDDEN && displayState != FieldStates.MARKED) {
+            displayState = realState;
+        }
+    }
+
     public char getValue() {
-        return displayState.getValue();
+        if(displayState != FieldStates.NUMBER) {
+            return displayState.getValue();
+        } else {
+            return Integer.toString(bombsAround).charAt(0);
+        }
     }
 
 }

@@ -17,11 +17,4 @@ public enum FieldStates {
         return this.value;
     }
 
-    public void addNumber() {
-        if(this == NUMBER) {
-            int x = Integer.parseInt(Character.toString(value)) + 1;
-            value = Integer.toString(x).charAt(0);
-        }
-    }
-
 }
