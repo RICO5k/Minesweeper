@@ -1,71 +1,70 @@
 package minesweeper;
 
 public class Field {
-    private FieldStates realState;
-    private FieldStates displayState;
+    private static final char MARKED_SIGN = '*';
+    private static final char HIDDEN_SIGN = '.';
+    private static final char BOMB_SIGN = 'X';
+    private static final char EMPTY_SIGN = '/';
+
+    private FieldStates state = FieldStates.EMPTY;
+
+    private boolean hidden = true;
+    private boolean marked = false;
+    private boolean safe = false;
 
     private int bombsAround = 0;
 
-    public Field() {
-        realState =  FieldStates.EMPTY;
-        displayState = FieldStates.HIDDEN;
-    }
+    public Field() {}
 
     public void setAsBomb() {
-        realState = FieldStates.BOMB;
-
-        displayState = FieldStates.HIDDEN;
+        state = FieldStates.BOMB;
     }
 
     public boolean isBomb(){
-        return realState == FieldStates.BOMB;
+        return state == FieldStates.BOMB;
     }
 
     public boolean isMarked() {
-        return displayState == FieldStates.MARKED;
+        return marked;
     }
 
-    public boolean hasBombsAround() {
-        return realState == FieldStates.NUMBER;
+    public boolean isHidden() {
+        return hidden;
     }
+
+    public boolean isEmpty() {
+        return state == FieldStates.EMPTY;
+    }
+
+    public boolean isSafe() {
+        return safe;
+    }
+
+    public void setAsSafe() { safe = true; }
 
     public void addBombAround() {
-        System.out.println(realState.toString());
-
-        if(realState != FieldStates.NUMBER) {
-            realState = FieldStates.NUMBER;
-            reveal();
-        }
-
+        state = FieldStates.NUMBER;
         bombsAround++;
-        updateDisplay();
     }
 
     public void toggleMark() {
-        if(displayState == FieldStates.MARKED) {
-            displayState = FieldStates.HIDDEN;
-        } else if(displayState == FieldStates.HIDDEN) {
-            displayState = FieldStates.MARKED;
-        }
+        marked = !marked;
     }
 
     public void reveal() {
-        if(displayState == FieldStates.HIDDEN) {
-            displayState = realState;
-        }
-    }
-
-    private void updateDisplay() {
-        if(displayState != FieldStates.HIDDEN && displayState != FieldStates.MARKED) {
-            displayState = realState;
-        }
+        hidden = false;
     }
 
     public char getValue() {
-        if(displayState != FieldStates.NUMBER) {
-            return displayState.getValue();
-        } else {
-            return Integer.toString(bombsAround).charAt(0);
+        if(hidden) {
+            return marked ? MARKED_SIGN : HIDDEN_SIGN;
+        }
+
+        switch(state) {
+            case NUMBER: return Integer.toString(bombsAround).charAt(0);
+            case BOMB: return BOMB_SIGN;
+            case EMPTY:
+            default: return EMPTY_SIGN;
         }
     }
 
